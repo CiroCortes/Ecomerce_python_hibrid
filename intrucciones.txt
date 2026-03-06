@@ -1,0 +1,150 @@
+Módulo 8 – Entrega final de portafolio
+
+1) Propósito
+Entregar la versión final del e-commerce integrando lo desarrollado en módulos anteriores y
+dejándolo listo para portafolio: aplicación ejecutable en local, flujo principal completo, y
+documentación clara en GitHub.
+2) Alcance (MVP final)
+2.1 Autenticación y acceso
+• Usuario (cliente): iniciar sesión, acceder al catálogo y operar el carrito.
+• Administrador: iniciar sesión y acceder a un área de administración para gestionar
+productos.
+2.2 Catálogo y persistencia
+• Catálogo de productos mostrado desde la base de datos (ORM de Django).
+• Productos persistidos y editables (creación/edición/eliminación) por administrador.
+2.3 Carrito y compra (flujo completo)
+• Carrito funcional para cliente:
+o agregar productos
+o quitar productos
+o actualizar cantidades
+o mostrar subtotales y total correcto
+• Confirmación de compra:
+o registrar una orden (pedido) con sus ítems
+o asociar la orden al usuario autenticado
+
+El foco es que el flujo “catálogo → carrito → confirmación” funcione de forma estable.
+2.4 Vistas y navegación
+• Mantener un frontend consistente (puede ser Bootstrap como en módulos anteriores).
+• Navegación clara entre:
+o catálogo
+o detalle de producto (si existe)
+o carrito
+o login/logout
+o administración de productos (solo admin)
+
+2.5 Validaciones y mensajes
+• Validaciones básicas en formularios (por ejemplo, campos requeridos, precio > 0,
+cantidades > 0).
+• Mensajes claros de éxito/error para guiar al usuario.
+
+3) Entregables
+• Proyecto comprimido en un único archivo .zip o repositorio público.
+• README.md que incluya:
+o enlace al repositorio público
+o requisitos e instalación (entorno virtual, dependencias)
+o cómo ejecutar en local (migraciones, runserver)
+o rutas principales (públicas, cliente, admin)
+o credenciales de prueba: 1 ADMIN y 1 CLIENTE
+o (opcional) capturas de pantalla: home/catálogo, carrito, admin
+
+Rúbrica de evaluación
+
+Criterio Excelente (3 pts) Adecuado (2
+
+pts)
+
+Básico (1 pt) Insuficiente
+(0 pts)
+
+Funcionamiento
+integral
+
+Login/roles, catálogo,
+admin productos, carrito y
+compra funcionan sin fallas
+visibles.
+
+Funciona con
+detalles
+menores.
+
+Flujo incompleto o
+inestable.
+
+No
+funciona.
+
+Persistencia y
+datos
+
+Productos y órdenes se
+guardan y recuperan
+correctamente (ORM +
+BD).
+
+Funciona con
+detalles
+menores.
+
+Parcial o frágil. Sin
+persistencia
+real.
+
+UX/UI y claridad Navegación clara;
+mensajes útiles; interfaz
+consistente.
+
+Aceptable con
+pequeñas
+inconsistencias.
+
+Desorden o
+mensajes
+confusos.
+
+Poco
+usable.
+
+Validaciones Reglas aplicadas y
+mensajes claros en
+formularios
+(productos/carrito/compra).
+
+Aceptable con
+huecos.
+
+Mínimas o
+confusas.
+
+Sin
+validación.
+
+Código/estructura Proyecto ordenado;
+responsabilidades claras;
+convenciones
+consistentes.
+
+Aceptable. Mezcla de
+responsabilidades;
+difícil de seguir.
+
+Desorden
+serio.
+
+Documentación
+(README +
+GitHub)
+
+README completo:
+instalación, ejecución,
+rutas, roles, credenciales;
+reproducible.
+
+Útil pero
+incompleto.
+
+Escueto o
+impreciso.
+
+Ausente o
+inservible.

@@ -1,0 +1,64 @@
+<div class="product-card rounded-2xl overflow-hidden flex flex-col h-full group">
+    <!-- Image Box -->
+    <a href="{% url 'store:product_detail' product.id %}" class="relative block product-image-container bg-white aspect-square flex items-center justify-center p-4">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="object-contain w-full h-full">
+        {% else %}
+            <div class="flex flex-col items-center justify-center text-gray-300">
+                <i class="fa-solid fa-image text-4xl mb-2"></i>
+                <span class="text-sm">Sin imagen</span>
+            </div>
+        {% endif %}
+        
+        <!-- Stock Label -->
+        {% if not product.in_stock %}
+            <div class="absolute top-2 left-2 bg-rose-500 text-white text-xs font-bold px-2 py-1 rounded-md z-10 shadow-sm">
+                Agotado
+            </div>
+        {% elif product.is_new %}
+            <div class="absolute top-2 left-2 bg-emerald-500 text-white text-xs font-bold px-2 py-1 rounded-md z-10 shadow-sm">
+                Nuevo
+            </div>
+        {% endif %}
+    </a>
+
+    <!-- Content Box -->
+    <div class="p-5 flex flex-col flex-grow bg-white border-t border-gray-50">
+        <div class="flex justify-between items-start mb-2">
+            <h3 class="text-base font-semibold text-gray-800 line-clamp-2 leading-snug group-hover:text-brand-600 transition-colors">
+                <a href="{% url 'store:product_detail' product.id %}">{{ product.name }}</a>
+            </h3>
+            <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded font-mono">{{ product.sku }}</span>
+        </div>
+        
+        <!-- Optional Tags (Hybrid Model feature showing) -->
+        <div class="flex flex-wrap gap-1 mb-3">
+            {% if product.ingredients %}
+            <span class="text-[10px] uppercase font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 rounded-sm"><i class="fa-solid fa-leaf mr-1"></i>Natural</span>
+            {% endif %}
+            {% if product.voltage %}
+            <span class="text-[10px] uppercase font-bold text-amber-700 bg-amber-50 border border-amber-100 px-1.5 py-0.5 rounded-sm"><i class="fa-solid fa-plug mr-1"></i>Electro</span>
+            {% endif %}
+        </div>
+        
+        <p class="text-sm text-gray-500 line-clamp-2 mb-4 flex-grow">{{ product.description }}</p>
+        
+        <div class="flex items-end justify-between mt-auto">
+            <span class="text-xl font-bold text-gray-900">${{ product.price }}</span>
+            
+            {% if product.in_stock %}
+            <form action="{% url 'store:cart_add' product.id %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="w-10 h-10 rounded-full btn-eco text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-transform" aria-label="Agregar al carrito">
+                    <i class="fa-solid fa-plus font-bold"></i>
+                </button>
+            </form>
+            {% else %}
+            <button disabled class="w-10 h-10 rounded-full bg-gray-200 text-gray-400 flex items-center justify-center cursor-not-allowed" aria-label="Sin stock">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            {% endif %}
+        </div>
+    </div>
+</div>

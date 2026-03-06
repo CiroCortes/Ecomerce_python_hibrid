@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Iniciar Sesión - EcoTienda{% endblock %}
+
+{% block content %}
+<div class="min-h-[70vh] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="flex justify-center text-brand-600 mb-4">
+            <i class="fa-solid fa-leaf text-5xl"></i>
+        </div>
+        <h2 class="text-center text-3xl font-extrabold text-gray-900 tracking-tight">Accede a tu cuenta</h2>
+        <p class="mt-2 text-center text-sm text-gray-600">
+            ¿Nuevo aquí? <a href="#" class="font-medium text-brand-600 hover:text-brand-500 transition-colors">Crea una cuenta ecológica (Próximamente)</a>
+        </p>
+    </div>
+
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="bg-white py-8 px-4 shadow-xl shadow-gray-200/50 sm:rounded-2xl sm:px-10 border border-gray-100 relative overflow-hidden">
+            <!-- Decorative circle -->
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-brand-50 rounded-full opacity-50 pointer-events-none"></div>
+
+            <form class="space-y-6 relative z-10" action="{% url 'login' %}" method="POST">
+                {% csrf_token %}
+
+                <!-- Manejo de errores de login -->
+                {% if form.errors %}
+                <div class="bg-rose-50 border-l-4 border-rose-500 p-4 mb-4 rounded-md">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fa-solid fa-circle-exclamation text-rose-500"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-rose-700">Tu usuario o contraseña no son correctos. Por favor, intenta de nuevo.</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div>
+                    <label for="id_username" class="block text-sm font-medium text-gray-700">Nombre de Usuario</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-user text-gray-400"></i>
+                        </div>
+                        <input id="id_username" name="username" type="text" autocomplete="username" required class="appearance-none block w-full pl-10 px-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand-500 focus:border-brand-500 sm:text-sm bg-gray-50 focus:bg-white transition-colors">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="id_password" class="block text-sm font-medium text-gray-700">Contraseña</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-lock text-gray-400"></i>
+                        </div>
+                        <input id="id_password" name="password" type="password" autocomplete="current-password" required class="appearance-none block w-full pl-10 px-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand-500 focus:border-brand-500 sm:text-sm bg-gray-50 focus:bg-white transition-colors">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-brand-600 focus:ring-brand-500 border-gray-300 rounded cursor-pointer">
+                        <label for="remember-me" class="ml-2 block text-sm text-gray-900 cursor-pointer">Recordarme</label>
+                    </div>
+
+                    <div class="text-sm">
+                        <a href="#" class="font-medium text-brand-600 hover:text-brand-500 transition-colors">¿Olvidaste tu contraseña?</a>
+                    </div>
+                </div>
+
+                <div>
+                    <input type="hidden" name="next" value="{{ next|default:'/' }}">
+                    <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white btn-eco hover:-translate-y-1 transition-transform">
+                        Ingresar a EcoTienda
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

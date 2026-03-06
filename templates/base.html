@@ -1,0 +1,173 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EcoTienda Profesional{% endblock %}</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS (CDN for Development) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            900: '#064e3b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS (Animaciones y Glassmorphism) -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    
+    <!-- FontAwesome (Iconos) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="text-gray-800 antialiased flex flex-col min-h-screen">
+
+    <!-- Navbar: Glassmorphism -->
+    <nav class="glass-nav fixed w-full z-50 top-0 transition-all duration-300 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <i class="fa-solid fa-leaf text-brand-600 text-3xl"></i>
+                    <a href="/" class="font-bold text-2xl tracking-tight text-gray-900">Eco<span class="text-brand-600">Tienda</span></a>
+                </div>
+
+                <!-- Navigation Links (Desktop) -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="text-gray-600 hover:text-brand-600 font-medium transition-colors">Inicio</a>
+                    <a href="/" class="text-gray-600 hover:text-brand-600 font-medium transition-colors">Catálogo</a>
+                    <a href="#" class="text-gray-600 hover:text-brand-600 font-medium transition-colors">Nosotros</a>
+                </div>
+
+                <!-- Icons (User & Cart) -->
+                <div class="flex items-center space-x-6">
+                    <!-- User Account -->
+                    {% if user.is_authenticated %}
+                        <div class="relative group cursor-pointer text-gray-600 flex items-center">
+                            <i class="fa-regular fa-user text-xl hover:text-brand-600 transition-colors"></i>
+                            <span class="ml-1 mr-4 text-sm font-medium">{{ user.username }}</span>
+                            
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="text-xs text-rose-500 hover:text-rose-700 font-bold border border-rose-200 px-2 py-1 rounded-md transition-colors"><i class="fa-solid fa-arrow-right-from-bracket mr-1"></i>Salir</button>
+                            </form>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="text-gray-600 hover:text-brand-600 font-medium transition-colors text-sm"><i class="fa-regular fa-user mr-1 text-lg"></i> Ingresar</a>
+                    {% endif %}
+
+                    <!-- Cart Icon with Badge -->
+                    <a href="{% url 'store:cart_detail' %}" class="relative text-gray-600 hover:text-brand-600 transition-all transform hover:scale-110">
+                        <i class="fa-solid fa-cart-shopping text-2xl"></i>
+                        {% if cart|length > 0 %}
+                        <span class="absolute -top-2 -right-2 bg-rose-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md">
+                            {{ cart|length }}
+                        </span>
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-20"> 
+        {% block content %}
+        <!-- Aquí va el contenido de cada página -->
+        {% endblock %}
+    </main>
+
+    <!-- Footer Premium -->
+    <footer class="bg-gray-900 border-t border-gray-800 text-gray-300 py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <div class="flex items-center gap-2 mb-4">
+                    <i class="fa-solid fa-leaf text-brand-500 text-2xl"></i>
+                    <span class="font-bold text-xl text-white">Eco<span class="text-brand-500">Tienda</span></span>
+                </div>
+                <p class="text-sm text-gray-400 mb-4">Llevando el poder de la naturaleza a tu puerta de una forma ética y sustentable.</p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition"><i class="fa-brands fa-instagram text-xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition"><i class="fa-brands fa-facebook text-xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition"><i class="fa-brands fa-twitter text-xl"></i></a>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-white font-semibold mb-4 text-lg">Categorías</h3>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li><a href="#" class="hover:text-brand-400 transition">Cuidado Facial</a></li>
+                    <li><a href="#" class="hover:text-brand-400 transition">Suplementos Naturales</a></li>
+                    <li><a href="#" class="hover:text-brand-400 transition">Aromaterapia</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-white font-semibold mb-4 text-lg">Nosotros</h3>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li><a href="#" class="hover:text-brand-400 transition">Nuestra Historia</a></li>
+                    <li><a href="#" class="hover:text-brand-400 transition">Certificaciones</a></li>
+                    <li><a href="#" class="hover:text-brand-400 transition">Contacto</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-gray-800 text-center text-sm text-gray-500">
+            &copy; {% now 'Y' %} EcoTienda Profesional. Desarrollo BootCamp Python. Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- Django Messages (Toasts Customizados con Tailwind y Animación CSS) -->
+    {% if messages %}
+    <div class="fixed top-24 right-4 z-50 flex flex-col space-y-2 pointer-events-none">
+        {% for message in messages %}
+            <div class="toast-anim pointer-events-auto rounded-lg shadow-lg p-4 flex items-center border-l-4 
+            {% if message.tags == 'success' %} bg-emerald-50 border-emerald-500 text-emerald-800 
+            {% elif message.tags == 'warning' %} bg-amber-50 border-amber-500 text-amber-800 
+            {% elif message.tags == 'error' %} bg-rose-50 border-rose-500 text-rose-800 
+            {% else %} bg-blue-50 border-blue-500 text-blue-800 {% endif %} relative overflow-hidden">
+                <div class="flex-shrink-0 mr-3 text-2xl">
+                    {% if message.tags == 'success' %} <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                    {% elif message.tags == 'warning' %} <i class="fa-solid fa-circle-exclamation text-amber-500"></i>
+                    {% elif message.tags == 'error' %} <i class="fa-solid fa-circle-xmark text-rose-500"></i>
+                    {% else %} <i class="fa-solid fa-circle-info text-blue-500"></i> {% endif %}
+                </div>
+                <div>
+                    <p class="font-medium text-sm">{{ message }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <!-- Script básico para desaparecer los toasts después de 4s -->
+    <script>
+        setTimeout(() => {
+            document.querySelectorAll('.toast-anim').forEach((el) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(-10px)';
+                el.style.transition = 'all 0.5s ease-out';
+                setTimeout(() => el.remove(), 500);
+            });
+        }, 4000);
+    </script>
+    {% endif %}
+
+</body>
+</html>

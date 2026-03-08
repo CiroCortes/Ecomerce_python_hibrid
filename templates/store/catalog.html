@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Catálogo de Productos - EcoTienda{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Header del Catálogo -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+        <div>
+            <h1 class="text-3xl font-extrabold text-gray-900">Nuestro Catálogo</h1>
+            <p class="text-gray-500 mt-2">Explora todos nuestros productos orgánicos y ecológicos.</p>
+        </div>
+        <!-- Selector de categorías móvil (opcional/simple) -->
+        <div class="md:hidden">
+            <select onchange="window.location.href=this.value" class="w-full border-gray-300 rounded-md shadow-sm focus:border-brand-500 focus:ring-brand-500">
+                <option value="{% url 'store:catalog' %}">Todas las categorías</option>
+                {% for cat in categories %}
+                    <option value="{% url 'store:catalog' %}?category={{ cat.slug }}" {% if current_category == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-8">
+        <!-- Sidebar - Filtros -->
+        <aside class="hidden md:block w-64 flex-shrink-0">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                <h3 class="font-bold text-gray-900 mb-4 uppercase tracking-wider text-sm">Categorías</h3>
+                <ul class="space-y-3">
+                    <li>
+                        <a href="{% url 'store:catalog' %}" class="flex items-center justify-between {% if not current_category %}text-brand-600 font-bold{% else %}text-gray-600 hover:text-brand-500{% endif %} transition-colors">
+                            <span>Todas</span>
+                        </a>
+                    </li>
+                    {% for cat in categories %}
+                    <li>
+                        <a href="{% url 'store:catalog' %}?category={{ cat.slug }}" class="flex items-center justify-between {% if current_category == cat.slug %}text-brand-600 font-bold{% else %}text-gray-600 hover:text-brand-500{% endif %} transition-colors">
+                            <span>{{ cat.name }}</span>
+                            <!-- Se podría añadir el conteo si estuviera en el context: <span class="bg-gray-100 text-gray-500 text-xs py-1 px-2 rounded-full">{{ cat.products.count }}</span> -->
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                
+                {% if current_category %}
+                <div class="mt-6 pt-6 border-t border-gray-100">
+                    <a href="{% url 'store:catalog' %}" class="text-sm text-rose-500 hover:text-rose-700 flex items-center gap-1">
+                        <i class="fa-solid fa-xmark"></i> Limpiar filtros
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </aside>
+
+        <!-- Grilla de Productos -->
+        <main class="flex-grow">
+            <!-- Resultados y ordenamiento (simplificado) -->
+            <div class="flex justify-between items-center mb-6">
+                <p class="text-sm text-gray-500">
+                    Mostrando del catálogo: {{ paginator.count }} producto(s) en total.
+                </p>
+            </div>
+
+            {% if products %}
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for product in products %}
+                        {% include 'store/includes/product_card.html' with product=product %}
+                    {% endfor %}
+                </div>
+                
+                <!-- Paginación -->
+                {% if is_paginated %}
+                <div class="mt-12 flex justify-center">
+                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                        {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="sr-only">Anterior</span>
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </a>
+                        {% endif %}
+                        
+                        <!-- Páginas simples -->
+                        <span class="relative inline-flex items-center px-4 py-2 border border-brand-500 bg-brand-50 text-sm font-medium text-brand-600">
+                            Página {{ page_obj.number }} de {{ paginator.num_pages }}
+                        </span>
+
+                        {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="sr-only">Siguiente</span>
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </a>
+                        {% endif %}
+                    </nav>
+                </div>
+                {% endif %}
+
+            {% else %}
+                <!-- Empty State -->
+                <div class="text-center py-16 bg-white rounded-2xl shadow-sm border border-gray-100">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 mb-4">
+                        <i class="fa-solid fa-magnifying-glass text-2xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900">No se encontraron productos</h3>
+                    <p class="text-gray-500 mt-1">Prueba seleccionando otra categoría o quitando los filtros.</p>
+                    <a href="{% url 'store:catalog' %}" class="mt-4 inline-block bg-brand-600 text-white px-4 py-2 rounded-md hover:bg-brand-700 transition">Ver todos</a>
+                </div>
+            {% endif %}
+        </main>
+    </div>
+</div>
+{% endblock %}

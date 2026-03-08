@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Crear Cuenta - EcoTienda{% endblock %}
+
+{% block content %}
+<div class="min-h-[70vh] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="flex justify-center text-brand-600 mb-4">
+            <i class="fa-solid fa-leaf text-5xl"></i>
+        </div>
+        <h2 class="text-center text-3xl font-extrabold text-gray-900 tracking-tight">Únete a EcoTienda</h2>
+        <p class="mt-2 text-center text-sm text-gray-600">
+            ¿Ya tienes cuenta? <a href="{% url 'login' %}" class="font-medium text-brand-600 hover:text-brand-500 transition-colors">Inicia sesión aquí</a>
+        </p>
+    </div>
+
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="bg-white py-8 px-4 shadow-xl shadow-gray-200/50 sm:rounded-2xl sm:px-10 border border-gray-100 relative overflow-hidden">
+            <!-- Decorative circle -->
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-brand-50 rounded-full opacity-50 pointer-events-none"></div>
+
+            <form class="space-y-5 relative z-10" method="POST">
+                {% csrf_token %}
+
+                {# Errores generales del formulario (non_field_errors) #}
+                {% if form.non_field_errors %}
+                <div class="bg-rose-50 border-l-4 border-rose-500 p-4 rounded-md">
+                    <div class="flex">
+                        <i class="fa-solid fa-circle-exclamation text-rose-500 flex-shrink-0"></i>
+                        <div class="ml-3">
+                            {% for error in form.non_field_errors %}
+                            <p class="text-sm text-rose-700">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {# ── Campo: Username ── #}
+                <div>
+                    <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        Nombre de Usuario
+                    </label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-user text-gray-400"></i>
+                        </div>
+                        <input id="{{ form.username.id_for_label }}"
+                               name="{{ form.username.html_name }}"
+                               type="text"
+                               autocomplete="username"
+                               required
+                               value="{{ form.username.value|default:'' }}"
+                               class="appearance-none block w-full pl-10 px-3 py-3 border {% if form.username.errors %}border-rose-400{% else %}border-gray-300{% endif %} rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand-500 focus:border-brand-500 sm:text-sm bg-gray-50 focus:bg-white transition-colors">
+                    </div>
+                    {% for error in form.username.errors %}
+                    <p class="mt-1 text-xs text-orange-500"><i class="fa-solid fa-triangle-exclamation mr-1"></i>{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                {# ── Campo: Password1 ── #}
+                <div>
+                    <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        Contraseña
+                    </label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-lock text-gray-400"></i>
+                        </div>
+                        <input id="{{ form.password1.id_for_label }}"
+                               name="{{ form.password1.html_name }}"
+                               type="password"
+                               autocomplete="new-password"
+                               required
+                               class="appearance-none block w-full pl-10 px-3 py-3 border {% if form.password1.errors %}border-rose-400{% else %}border-gray-300{% endif %} rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand-500 focus:border-brand-500 sm:text-sm bg-gray-50 focus:bg-white transition-colors">
+                    </div>
+                    {% for error in form.password1.errors %}
+                    <p class="mt-1 text-xs text-orange-500"><i class="fa-solid fa-triangle-exclamation mr-1"></i>{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                {# ── Campo: Password2 (confirmación) ── #}
+                <div>
+                    <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        Confirmar Contraseña
+                    </label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-lock text-gray-400"></i>
+                        </div>
+                        <input id="{{ form.password2.id_for_label }}"
+                               name="{{ form.password2.html_name }}"
+                               type="password"
+                               autocomplete="new-password"
+                               required
+                               class="appearance-none block w-full pl-10 px-3 py-3 border {% if form.password2.errors %}border-rose-400{% else %}border-gray-300{% endif %} rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand-500 focus:border-brand-500 sm:text-sm bg-gray-50 focus:bg-white transition-colors">
+                    </div>
+                    {% for error in form.password2.errors %}
+                    <p class="mt-1 text-xs text-orange-500"><i class="fa-solid fa-triangle-exclamation mr-1"></i>{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                {# ── Botón de envío ── #}
+                <div class="pt-2">
+                    <button type="submit"
+                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white btn-eco hover:-translate-y-1 transition-transform">
+                        <i class="fa-solid fa-user-plus mr-2"></i> Crear mi cuenta EcoTienda
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

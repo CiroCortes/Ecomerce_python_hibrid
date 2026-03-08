@@ -1,26 +1,46 @@
 <div class="product-card rounded-2xl overflow-hidden flex flex-col h-full group">
     <!-- Image Box -->
-    <a href="{% url 'store:product_detail' product.id %}" class="relative block product-image-container bg-white aspect-square flex items-center justify-center p-4">
-        {% if product.image %}
-            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="object-contain w-full h-full">
-        {% else %}
-            <div class="flex flex-col items-center justify-center text-gray-300">
-                <i class="fa-solid fa-image text-4xl mb-2"></i>
-                <span class="text-sm">Sin imagen</span>
-            </div>
-        {% endif %}
+    <div class="relative bg-white aspect-square group/image">
+        <!-- Enlace a detalle -->
+        <a href="{% url 'store:product_detail' product.id %}" class="block w-full h-full flex items-center justify-center p-4 relative z-0">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="object-contain w-full h-full transform group-hover/image:scale-105 transition-transform duration-300">
+            {% else %}
+                <div class="flex flex-col items-center justify-center text-gray-300">
+                    <i class="fa-solid fa-image text-4xl mb-2"></i>
+                    <span class="text-sm">Sin imagen</span>
+                </div>
+            {% endif %}
+        </a>
         
-        <!-- Stock Label -->
-        {% if not product.in_stock %}
-            <div class="absolute top-2 left-2 bg-rose-500 text-white text-xs font-bold px-2 py-1 rounded-md z-10 shadow-sm">
-                Agotado
-            </div>
-        {% elif product.is_new %}
-            <div class="absolute top-2 left-2 bg-emerald-500 text-white text-xs font-bold px-2 py-1 rounded-md z-10 shadow-sm">
-                Nuevo
-            </div>
-        {% endif %}
-    </a>
+        <!-- Botón de Like Absoluto -->
+        <div class="absolute top-3 right-3 z-10 flex flex-col items-center">
+            <form action="{% url 'store:toggle_like' product.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center hover:scale-110 transition-transform focus:outline-none" title="{% if user in product.likes.all %}Quitar de favoritos{% else %}Añadir a favoritos{% endif %}">
+                    {% if user.is_authenticated and user in product.likes.all %}
+                        <i class="fa-solid fa-heart text-rose-500 text-lg"></i>
+                    {% else %}
+                        <i class="fa-regular fa-heart text-gray-400 hover:text-rose-500 text-lg transition-colors"></i>
+                    {% endif %}
+                </button>
+            </form>
+            <!-- Contador -->
+            {% if product.likes.count > 0 %}
+                <span class="text-[10px] font-bold text-gray-500 mt-0.5 bg-white/80 px-1 rounded-sm">{{ product.likes.count }}</span>
+            {% endif %}
+        </div>
+
+        <!-- Stock / Estado Label -->
+        <div class="absolute top-3 left-3 flex flex-col gap-1 z-10 pointer-events-none">
+            {% if not product.in_stock %}
+                <div class="bg-rose-500 text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded shadow-sm">Agotado</div>
+            {% endif %}
+            {% if product.is_featured %}
+                <div class="bg-amber-400 text-amber-900 text-[10px] uppercase font-bold px-2 py-0.5 rounded shadow-sm"><i class="fa-solid fa-star mr-0.5"></i>Imperdible</div>
+            {% endif %}
+        </div>
+    </div>
 
     <!-- Content Box -->
     <div class="p-5 flex flex-col flex-grow bg-white border-t border-gray-50">

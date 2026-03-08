@@ -3,6 +3,22 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from decimal import Decimal
 
+class Category(models.Model):
+    """
+    Categoría para organizar los productos del catálogo.
+    """
+    name = models.CharField(max_length=100, unique=True, verbose_name="Nombre")
+    slug = models.SlugField(max_length=100, unique=True, help_text="URL amigable")
+    description = models.TextField(blank=True, null=True, verbose_name="Descripción")
+    
+    class Meta:
+        ordering = ['name']
+        verbose_name = "Categoría"
+        verbose_name_plural = "Categorías"
+
+    def __str__(self):
+        return self.name
+
 class Product(models.Model):
     """
     Modelo de Producto Híbrido:
@@ -11,6 +27,7 @@ class Product(models.Model):
     usando campos anulables.
     """
     # Campos Core (Obligatorios para todo producto)
+    category = models.ForeignKey(Category, related_name='products', on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Categoría")
     name = models.CharField(max_length=200, verbose_name="Nombre")
     sku = models.CharField(max_length=50, unique=True, verbose_name="SKU")
     description = models.TextField(verbose_name="Descripción")
@@ -20,6 +37,9 @@ class Product(models.Model):
     
     # Metadatos para SEO y control interno
     is_active = models.BooleanField(default=True, verbose_name="Activo")
+    is_featured = models.BooleanField(default=False, verbose_name="Imperdible (Destacado)")
+    likes = models.ManyToManyField(User, related_name='liked_products', blank=True, verbose_name="Favoritos")
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

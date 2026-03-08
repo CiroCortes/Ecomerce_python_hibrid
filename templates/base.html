@@ -55,9 +55,9 @@
 
                 <!-- Navigation Links (Desktop) -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="/" class="text-gray-600 hover:text-brand-600 font-medium transition-colors">Inicio</a>
-                    <a href="/" class="text-gray-600 hover:text-brand-600 font-medium transition-colors">Catálogo</a>
-                    <a href="#" class="text-gray-600 hover:text-brand-600 font-medium transition-colors">Nosotros</a>
+                    <a href="{% url 'store:product_list' %}" class="text-gray-600 hover:text-brand-600 font-medium transition-colors">Inicio</a>
+                    <a href="{% url 'store:catalog' %}" class="text-gray-600 hover:text-brand-600 font-medium transition-colors">Catálogo</a>
+                    <a href="{% url 'store:about' %}" class="text-gray-600 hover:text-brand-600 font-medium transition-colors">Nosotros</a>
                 </div>
 
                 <!-- Icons (User & Cart) -->
@@ -73,9 +73,17 @@
                                 <button type="submit" class="text-xs text-rose-500 hover:text-rose-700 font-bold border border-rose-200 px-2 py-1 rounded-md transition-colors"><i class="fa-solid fa-arrow-right-from-bracket mr-1"></i>Salir</button>
                             </form>
                         </div>
+                        {% if user.is_staff %}
+                        <a href="{% url 'store:admin_product_list' %}"
+                           class="text-xs font-bold px-3 py-1.5 rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition-colors shadow-sm">
+                            <i class="fa-solid fa-shield-halved mr-1"></i>Panel Admin
+                        </a>
+                        {% endif %}
                     {% else %}
                         <a href="{% url 'login' %}" class="text-gray-600 hover:text-brand-600 font-medium transition-colors text-sm"><i class="fa-regular fa-user mr-1 text-lg"></i> Ingresar</a>
+                        <a href="{% url 'store:register' %}" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-brand-500 text-brand-600 hover:bg-brand-50 transition-colors">Registrarse</a>
                     {% endif %}
+
 
                     <!-- Cart Icon with Badge -->
                     <a href="{% url 'store:cart_detail' %}" class="relative text-gray-600 hover:text-brand-600 transition-all transform hover:scale-110">

@@ -17,6 +17,7 @@ db.sqlite3-journal
 # Media/Static (Local uploads/collected static)
 media/
 staticfiles/
+no_subir/
 
 # IDE/OS
 .vscode/

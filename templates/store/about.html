@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nosotros - EcoTienda{% endblock %}
+
+{% block content %}
+
+<!-- HERO Nosotros -->
+<section class="relative bg-gradient-to-br from-emerald-50 to-green-100 py-24 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <span class="inline-block py-1 px-4 rounded-full bg-emerald-100 text-emerald-800 text-sm font-bold mb-4">
+            <i class="fa-solid fa-leaf mr-2"></i>Nuestra Historia
+        </span>
+        <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight">
+            Somos <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-500">EcoTienda</span>
+        </h1>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            Una tienda dedicada a llevar lo mejor de la naturaleza a tu hogar, con productos 100% ecológicos, libres de crueldad y con el medio ambiente siempre en mente.
+        </p>
+    </div>
+    <!-- Decoración de fondo -->
+    <div class="absolute -top-10 -right-10 w-64 h-64 bg-emerald-200 rounded-full opacity-30 blur-3xl"></div>
+    <div class="absolute -bottom-10 -left-10 w-64 h-64 bg-green-200 rounded-full opacity-30 blur-3xl"></div>
+</section>
+
+<!-- MISIÓN, VISIÓN, VALORES -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Misión -->
+        <div class="bg-white rounded-3xl p-8 shadow-lg shadow-gray-100/80 border border-gray-100 text-center group hover:-translate-y-1 transition-transform duration-300">
+            <div class="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-bullseye text-2xl text-emerald-600"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 mb-3">Nuestra Misión</h2>
+            <p class="text-gray-500 leading-relaxed">
+                Ofrecer productos naturales de la más alta calidad, promoviendo hábitos de vida saludables y un consumo responsable que respeta tanto a las personas como al planeta.
+            </p>
+        </div>
+        <!-- Visión -->
+        <div class="bg-white rounded-3xl p-8 shadow-lg shadow-gray-100/80 border border-gray-100 text-center group hover:-translate-y-1 transition-transform duration-300">
+            <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-eye text-2xl text-blue-600"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 mb-3">Nuestra Visión</h2>
+            <p class="text-gray-500 leading-relaxed">
+                Ser la tienda ecológica de referencia en Latinoamérica, construyendo una comunidad de personas que eligen vivir de manera más consciente y sostenible.
+            </p>
+        </div>
+        <!-- Valores -->
+        <div class="bg-white rounded-3xl p-8 shadow-lg shadow-gray-100/80 border border-gray-100 text-center group hover:-translate-y-1 transition-transform duration-300">
+            <div class="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-heart text-2xl text-amber-600"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 mb-3">Nuestros Valores</h2>
+            <p class="text-gray-500 leading-relaxed">
+                Transparencia, sostenibilidad, respeto por los animales y compromiso con nuestra comunidad. Cada decisión que tomamos parte de estos cuatro pilares fundamentales.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- NUESTRA HISTORIA (Timeline simple) -->
+<section class="bg-gray-50 py-20 border-t border-gray-100">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-12">Nuestro Camino</h2>
+        <div class="relative border-l-2 border-emerald-200 ml-4 md:ml-0">
+            <!-- Hito 1 -->
+            <div class="mb-12 ml-8">
+                <div class="absolute -left-3 w-6 h-6 bg-emerald-500 rounded-full border-2 border-white shadow"></div>
+                <span class="text-xs font-bold text-emerald-600 uppercase tracking-widest">2020</span>
+                <h3 class="text-lg font-bold text-gray-900 mt-1">Los comienzos</h3>
+                <p class="text-gray-500 mt-1">EcoTienda nació de una simple pregunta: ¿por qué es tan difícil encontrar productos naturales de calidad? Con esa inquietud, comenzamos a construir nuestra tienda desde un pequeño taller en casa.</p>
+            </div>
+            <!-- Hito 2 -->
+            <div class="mb-12 ml-8">
+                <div class="absolute -left-3 w-6 h-6 bg-emerald-500 rounded-full border-2 border-white shadow"></div>
+                <span class="text-xs font-bold text-emerald-600 uppercase tracking-widest">2022</span>
+                <h3 class="text-lg font-bold text-gray-900 mt-1">Primera certificación</h3>
+                <p class="text-gray-500 mt-1">Obtuvimos nuestra primera certificación Cruelty-Free y comenzamos a distribuir a nivel nacional, llegando a más de 500 hogares satisfechos.</p>
+            </div>
+            <!-- Hito 3 -->
+            <div class="ml-8">
+                <div class="absolute -left-3 w-6 h-6 bg-emerald-500 rounded-full border-2 border-white shadow"></div>
+                <span class="text-xs font-bold text-emerald-600 uppercase tracking-widest">2025</span>
+                <h3 class="text-lg font-bold text-gray-900 mt-1">Expansión digital</h3>
+                <p class="text-gray-500 mt-1">Lanzamos nuestra plataforma de e-commerce para llegar a todos rincones de Chile y Latinoamérica, democratizando el acceso a productos orgánicos de calidad.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- EQUIPO -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-12">El equipo detrás de EcoTienda</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        <!-- Miembro 1 -->
+        <div class="text-center group">
+            <div class="w-24 h-24 bg-gradient-to-br from-emerald-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-4xl font-bold shadow-lg group-hover:scale-105 transition-transform">A</div>
+            <h3 class="font-bold text-gray-900">Ana García</h3>
+            <p class="text-sm text-emerald-600 font-medium">Fundadora & CEO</p>
+            <p class="text-sm text-gray-500 mt-2">Apasionada por la medicina natural y el consumo consciente. Herbóloga certificada con 10 años de experiencia.</p>
+        </div>
+        <!-- Miembro 2 -->
+        <div class="text-center group">
+            <div class="w-24 h-24 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-4xl font-bold shadow-lg group-hover:scale-105 transition-transform">C</div>
+            <h3 class="font-bold text-gray-900">Carlos Mendoza</h3>
+            <p class="text-sm text-emerald-600 font-medium">Director de Operaciones</p>
+            <p class="text-sm text-gray-500 mt-2">Experto en logística sustentable y cadenas de suministro éticas. Asegura que cada producto llegue perfecto a tu puerta.</p>
+        </div>
+        <!-- Miembro 3 -->
+        <div class="text-center group">
+            <div class="w-24 h-24 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-4xl font-bold shadow-lg group-hover:scale-105 transition-transform">S</div>
+            <h3 class="font-bold text-gray-900">Sofía Torres</h3>
+            <p class="text-sm text-emerald-600 font-medium">Jefa de Producto</p>
+            <p class="text-sm text-gray-500 mt-2">Bioquímica especializada en cosmética natural. Revisa y certifica cada producto de nuestro catálogo antes de subirlo a la tienda.</p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Final -->
+<section class="bg-emerald-700 text-white py-16">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+        <h2 class="text-3xl font-extrabold mb-4">¿Listo para unirte a la comunidad eco?</h2>
+        <p class="text-emerald-100 mb-8 text-lg">Explora nuestro catálogo y encuentra el producto natural perfecto para ti.</p>
+        <a href="{% url 'store:catalog' %}" class="inline-block bg-white text-emerald-700 font-bold px-8 py-3 rounded-full shadow-lg hover:bg-emerald-50 transition-colors">
+            <i class="fa-solid fa-leaf mr-2"></i>Ver Catálogo
+        </a>
+    </div>
+</section>
+
+{% endblock %}

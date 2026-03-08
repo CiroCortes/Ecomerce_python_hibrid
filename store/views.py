@@ -1,21 +1,71 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.forms import UserCreationForm
 from django.views.generic import ListView, DetailView
 from django.db import transaction
-from .models import Product, Order, OrderItem
+from .models import Product, Order, OrderItem, Category
 from .cart import Cart
+from .forms import ProductForm
+import uuid
+
+# ── Helper de acceso admin ────────────────────────────────────────────────────
+# Centralizado aquí para que todos los decoradores lo reutilicen (DRY).
+def _is_staff(user):
+    return user.is_authenticated and user.is_staff
+
 
 class ProductListView(ListView):
-    """Vista del catálogo inspirada en ecotiendanaturals, usando CBV para mantener DRY."""
+    """Vista del Home con los imperdibles/más vendidos."""
     model = Product
     template_name = 'store/product_list.html'
     context_object_name = 'products'
     
     def get_queryset(self):
-        # Solo mostrar productos activos en el front
-        return Product.objects.filter(is_active=True).order_related() if hasattr(Product.objects, 'order_related') else Product.objects.filter(is_active=True)
+        """
+        Lógica híbrida DRY para 'Imperdibles':
+        1. Intenta traer los productos marcados manualmente por el admin (is_featured=True).
+        2. Si hay menos de 4, rellena los faltantes con los más recientes.
+        Devuelve exactamente 4 productos asegurando que la portada siempre se vea viva.
+        """
+        # 1. Obtener los destacados manuales
+        featured = Product.objects.filter(is_active=True, is_featured=True).order_by('-created_at')
+        
+        # Si ya tenemos 4 o más, devolvemos solo 4
+        if featured.count() >= 4:
+            return featured[:4]
+            
+        # 2. Si faltan, calculamos cuántos necesitamos
+        needed = 4 - featured.count()
+        featured_ids = list(featured.values_list('id', flat=True))
+        
+        # Obtenemos los más recientes que NO estén ya en los destacados
+        recent = Product.objects.filter(is_active=True).exclude(id__in=featured_ids).order_by('-created_at')[:needed]
+        
+        # Unimos ambas listas (Django en Generic Views permite devolver una lista en lugar de un QuerySet si no hay paginación)
+        return list(featured) + list(recent)
+
+class CatalogView(ListView):
+    """Vista del catálogo completo con filtros por categoría y paginación."""
+    model = Product
+    template_name = 'store/catalog.html'
+    context_object_name = 'products'
+    paginate_by = 12
+
+    def get_queryset(self):
+        queryset = Product.objects.filter(is_active=True).order_related() if hasattr(Product.objects, 'order_related') else Product.objects.filter(is_active=True)
+        category_slug = self.request.GET.get('category')
+        if category_slug:
+            queryset = queryset.filter(category__slug=category_slug)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        context['current_category'] = self.request.GET.get('category')
+        return context
 
 class ProductDetailView(DetailView):
     model = Product
@@ -134,3 +184,115 @@ def checkout(request):
     # Si es GET, mostramos un formulario de checkout básico en el mismo cart_detail o nueva plantilla
     # Para el flujo MVP rápido, manejaremos el checkout en una ventana modal o directo.
     return redirect('store:cart_detail')
+
+
+def about(request):
+    """Vista estática de la página Nosotros."""
+    return render(request, 'store/about.html')
+
+
+def register(request):
+    """Registro de nuevo usuario. Tras el alta, inicia sesión automáticamente."""
+    # Si el usuario ya está autenticado, no necesita registrarse
+    if request.user.is_authenticated:
+        return redirect('store:product_list')
+
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Login automático post-registro — mejor UX, sin doble paso
+            login(request, user)
+            messages.success(request, f'¡Bienvenido/a a EcoTienda, {user.username}! Tu cuenta ha sido creada con éxito.')
+            return redirect('store:product_list')
+        # Si el formulario es inválido, se re-renderiza con los errores
+    else:
+        form = UserCreationForm()
+
+    return render(request, 'registration/register.html', {'form': form})
+
+
+@login_required
+def toggle_product_like(request, pk):
+    """
+    Agrega o quita un producto de los favoritos del usuario (Like).
+    Redirige transparentemente a la página desde la que se hizo clic.
+    """
+    product = get_object_or_404(Product, pk=pk)
+    
+    if request.user in product.likes.all():
+        product.likes.remove(request.user)
+        messages.info(request, f'Quitaste "{product.name}" de tus favoritos 🤍')
+    else:
+        product.likes.add(request.user)
+        messages.success(request, f'¡Agregaste "{product.name}" a tus favoritos ❤️!')
+        
+    return redirect(request.META.get('HTTP_REFERER', 'store:catalog'))
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PANEL DE ADMINISTRACIÓN — CRUD de Productos
+# Acceso restringido: solo usuarios con is_staff=True
+# ══════════════════════════════════════════════════════════════════════════════
+
+@user_passes_test(_is_staff, login_url='login')
+def admin_product_list(request):
+    """Lista todos los productos para el administrador (activos e inactivos)."""
+    products = Product.objects.select_related('category').order_by('-created_at')
+    return render(request, 'store/admin_product_list.html', {'products': products})
+
+
+@user_passes_test(_is_staff, login_url='login')
+def admin_product_create(request):
+    """Crea un nuevo producto. Genera el SKU automáticamente."""
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            product = form.save(commit=False)
+            # Generamos un SKU único internamente — el admin no lo necesita gestionar
+            product.sku = f"ECO-{uuid.uuid4().hex[:8].upper()}"
+            product.save()
+            messages.success(request, f'Producto "{product.name}" creado correctamente.')
+            return redirect('store:admin_product_list')
+    else:
+        form = ProductForm()
+
+    return render(request, 'store/admin_product_form.html', {
+        'form': form,
+        'action_title': 'Nuevo Producto',
+        'btn_label': 'Crear Producto',
+    })
+
+
+@user_passes_test(_is_staff, login_url='login')
+def admin_product_edit(request, pk):
+    """Edita un producto existente. Reutiliza el mismo form y template que crear (DRY)."""
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Producto "{product.name}" actualizado correctamente.')
+            return redirect('store:admin_product_list')
+    else:
+        form = ProductForm(instance=product)
+
+    return render(request, 'store/admin_product_form.html', {
+        'form': form,
+        'product': product,
+        'action_title': f'Editar: {product.name}',
+        'btn_label': 'Guardar Cambios',
+    })
+
+
+@user_passes_test(_is_staff, login_url='login')
+def admin_product_delete(request, pk):
+    """Elimina un producto tras confirmación explícita del administrador."""
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == 'POST':
+        name = product.name
+        product.delete()
+        messages.success(request, f'Producto "{name}" eliminado correctamente.')
+        return redirect('store:admin_product_list')
+
+    return render(request, 'store/admin_product_confirm_delete.html', {'product': product})

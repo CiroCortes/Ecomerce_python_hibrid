@@ -107,6 +107,10 @@ class OrderItem(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Precio Unitario")
     quantity = models.PositiveIntegerField(default=1, verbose_name="Cantidad")
 
+    class Meta:
+        verbose_name = "Ítem de Orden"
+        verbose_name_plural = "Ítems de Orden"
+
     def __str__(self):
         return f"{self.quantity} x {self.product.name if self.product else 'Producto Eliminado'}"
 

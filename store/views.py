@@ -55,7 +55,7 @@ class CatalogView(ListView):
     paginate_by = 12
 
     def get_queryset(self):
-        queryset = Product.objects.filter(is_active=True).order_related() if hasattr(Product.objects, 'order_related') else Product.objects.filter(is_active=True)
+        queryset = Product.objects.filter(is_active=True).select_related('category')
         category_slug = self.request.GET.get('category')
         if category_slug:
             queryset = queryset.filter(category__slug=category_slug)
@@ -98,6 +98,29 @@ def cart_add(request, product_id):
 
     # Retorna a la página desde la cual el usuario hizo clic en "agregar"
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+@require_POST
+def cart_update(request, product_id):
+    """Actualiza la cantidad de un producto en el carrito desde el formulario del carrito."""
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
+    try:
+        quantity = int(request.POST.get('quantity', 1))
+    except ValueError:
+        quantity = 1
+
+    if quantity <= 0:
+        cart.remove(product)
+        messages.info(request, f"{product.name} fue eliminado del carrito.")
+    elif quantity > product.stock:
+        cart.add(product=product, quantity=product.stock, override_quantity=True)
+        messages.warning(request, f"Cantidad ajustada al stock disponible ({product.stock} uds.).")
+    else:
+        cart.add(product=product, quantity=quantity, override_quantity=True)
+        messages.success(request, f"Cantidad de {product.name} actualizada.")
+
+    return redirect('store:cart_detail')
 
 
 @require_POST
@@ -212,6 +235,7 @@ def register(request):
     return render(request, 'registration/register.html', {'form': form})
 
 
+@require_POST
 @login_required
 def toggle_product_like(request, pk):
     """
